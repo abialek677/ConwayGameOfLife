@@ -80,8 +80,6 @@
                         <ComboBoxItem>Klasyczne (zielony)</ComboBoxItem>
                         <ComboBoxItem>Immigration</ComboBoxItem>
                         <ComboBoxItem>QuadLife</ComboBoxItem>
-                        <ComboBoxItem>WireWorld</ComboBoxItem>
-                        <ComboBoxItem>Custom</ComboBoxItem>
                     </ComboBox>
                 </StackPanel>
             </GroupBox>

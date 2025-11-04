@@ -24,26 +24,34 @@ namespace GameOfLifeWPF.IO
             }
         }
 
-        public static (Board board, string rule) LoadText(string path)
+        public static (Board board, string rule, string model) LoadText(string path)
         {
             using var reader = new StreamReader(path);
+            
+            var modelLine = reader.ReadLine()?.Trim() ?? "MODEL:Classic";
+            var model = modelLine.StartsWith("MODEL:")
+                ? modelLine.Substring(6).Trim()
+                : "Classic";
+            
             var rule = reader.ReadLine()?.Trim() ?? "B3/S23";
-            var dims = reader.ReadLine()?.Split(' ', '\t') ?? throw new IOException("no dims");
+
+
+            var dims = reader.ReadLine()?.Split(' ', '\t') 
+                       ?? throw new IOException("Missing dimensions line");
             var w = int.Parse(dims[0]);
             var h = int.Parse(dims[1]);
+            
             var board = new Board(w, h);
             for (var y = 0; y < h; y++)
             {
                 var line = reader.ReadLine();
-                
                 for (var x = 0; x < w && x < (line?.Length ?? 0); x++)
-                {
-                    board.Cells[y, x] = byte.TryParse(line[x].ToString(), out byte b) ? b : (byte)0;
-                }
-                    
+                    board.Cells[y, x] = byte.TryParse(line[x].ToString(), out var b) ? b : (byte)0;
             }
-            return (board, rule);
+
+            return (board, rule, model);
         }
+
 
         public static void ExportImage(Board board, BoardRenderer renderer, IColoringStrategy coloringStrategy, string path)
         {

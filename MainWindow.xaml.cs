@@ -12,7 +12,7 @@ public partial class MainWindow : Window
 {
     private BoardManager _boardManager;
     private BoardRenderer _renderer;
-    private WriteableBitmap _bitmap;
+    
     private DispatcherTimer _timer;
 
     private int _zoomLevel = 4;
@@ -20,6 +20,7 @@ public partial class MainWindow : Window
     public bool IsDrawing;
     public Pattern? SelectedPattern;
     public bool IsInsertMode;
+    public WriteableBitmap Bitmap;
     
     public int ZoomLevel => _zoomLevel;
     public BoardManager BoardManager => _boardManager;
@@ -45,8 +46,8 @@ public partial class MainWindow : Window
             wrap: false
         );
 
-        _bitmap = _renderer.CreateBitmap(_boardManager.Board);
-        BoardImage.Source = _bitmap;
+        Bitmap = _renderer.CreateBitmap(_boardManager.Board);
+        BoardImage.Source = Bitmap;
 
         _timer = new DispatcherTimer();
         _timer.Tick += (_, _) =>
@@ -75,15 +76,15 @@ public partial class MainWindow : Window
     
     public void Redraw()
     {
-        if (_bitmap.PixelWidth != _boardManager.Board.Width || _bitmap.PixelHeight != _boardManager.Board.Height)
-            _bitmap = _renderer.CreateBitmap(_boardManager.Board);
+        if (Bitmap.PixelWidth != _boardManager.Board.Width || Bitmap.PixelHeight != _boardManager.Board.Height)
+            Bitmap = _renderer.CreateBitmap(_boardManager.Board);
 
-        _renderer.Render(_boardManager.Board, _bitmap, _boardManager.ColoringStrategy);
+        _renderer.Render(_boardManager.Board, Bitmap, _boardManager.ColoringStrategy);
         UpdateImageSize();
         UiHandlers.RefreshStatistics(_boardManager, TxtGenerations, TxtBorn, TxtDied, TxtCells);
     }
 
-    private void UpdateImageSize()
+    public void UpdateImageSize()
     {
         if (BoardImage == null || _boardManager?.Board == null || ZoomSlider == null) 
             return;

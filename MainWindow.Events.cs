@@ -19,6 +19,11 @@ public partial class MainWindow
         var height = int.TryParse(TxtHeight.Text, out var h) ? h : 200;
         _boardManager.Board.Resize(width, height);
         _boardManager.ResetStats();
+        
+        Bitmap = _renderer.CreateBitmap(_boardManager.Board);
+        BoardImage.Source = Bitmap;
+        UpdateImageSize();
+
         Redraw();
     }
 
