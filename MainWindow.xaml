@@ -1,0 +1,124 @@
+<Window x:Class="GameOfLifeWPF.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Game of Life - WPF (Optimized)" Height="900" Width="1200">
+        
+    <Grid Background="#EFF6FC">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="380" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Main board area -->
+        <Border Grid.Column="0" Margin="8" BorderBrush="Gray" BorderThickness="2" CornerRadius="3">
+            <ScrollViewer Name="MainScroll" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                <Grid Background="#131417">
+                    <Image Name="BoardImage" RenderOptions.BitmapScalingMode="NearestNeighbor" />
+                </Grid>
+            </ScrollViewer>
+        </Border>
+
+        <!-- Panel sterowania z gradientem -->
+        <StackPanel Grid.Column="1" Margin="8" Orientation="Vertical" VerticalAlignment="Top">
+            <StackPanel.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="#FAFBFF" Offset="0" />
+                    <GradientStop Color="#DEEFFA" Offset="1" />
+                </LinearGradientBrush>
+            </StackPanel.Background>
+
+            <TextBlock Text="Game of Life - WPF (Optimized)" FontSize="18" FontWeight="Bold" Margin="4"
+                       Style="{StaticResource AnimatedText}" />
+
+            <WrapPanel Margin="4">
+                <Button Name="BtnNew" Click="BtnNew_Click" Margin="2">Nowa</Button>
+                <Button Name="BtnRandom" Click="BtnRandom_Click" Margin="2">Losuj</Button>
+                <Button Name="BtnClear" Click="BtnClear_Click" Margin="2">Wyczyść</Button>
+                <Button Name="BtnStep" Click="BtnStep_Click" Margin="2">Krok</Button>
+                <ToggleButton Name="BtnPlay" Checked="BtnPlay_Checked" Unchecked="BtnPlay_Unchecked" Margin="2">Start</ToggleButton>
+            </WrapPanel>
+
+            <StackPanel Orientation="Horizontal" Margin="4" VerticalAlignment="Center">
+                <TextBlock Text="Szybkość (ms):" VerticalAlignment="Center" Margin="4" />
+                <Slider Name="SpeedSlider" Minimum="1" Maximum="150" Value="75" Width="180" IsMoveToPointEnabled="True" />
+            </StackPanel>
+
+            <GroupBox Header="Plansza" Margin="4">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="2">
+                        <TextBlock Text="Szerokość:" VerticalAlignment="Center" Margin="4" />
+                        <TextBox Name="TxtWidth" Text="200" Width="80" Margin="4" />
+                        <TextBlock Text="Wysokość:" VerticalAlignment="Center" Margin="4" />
+                        <TextBox Name="TxtHeight" Text="200" Width="80" Margin="4" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="2">
+                        <TextBlock Text="Wrap (cykliczne granice):" VerticalAlignment="Center" Margin="4" />
+                        <ToggleButton Name="ToggleWrap" IsChecked="False" Content="Wrap ON/OFF"
+                                      Checked="ToggleWrap_Checked" Unchecked="ToggleWrap_Unchecked" Margin="4" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="2">
+                        <Button Name="BtnSave" Click="BtnSave_Click" Margin="4">Zapisz...</Button>
+                        <Button Name="BtnLoad" Click="BtnLoad_Click" Margin="4">Wczytaj...</Button>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="2">
+                    </StackPanel>
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox Header="Wygląd" Margin="4">
+                <StackPanel>
+                    <TextBlock Text="Zoom:" Margin="4" />
+                    <Slider Name="ZoomSlider" Minimum="1" Maximum="16" Value="4" Width="300" Margin="4"
+                            ValueChanged="ZoomSlider_ValueChanged" />
+                    <StackPanel Orientation="Horizontal" Margin="2">
+                        <TextBlock Text="Reguła (B/S):" VerticalAlignment="Center" Margin="4" />
+                        <TextBox Name="TxtRule" Text="B3/S23" Width="140" Margin="4" />
+                        <Button Name="BtnApplyRule" Click="BtnApplyRule_Click" Margin="4">Zastosuj</Button>
+                    </StackPanel>
+                    <TextBlock Text="Paleta kolorów:" Margin="4" />
+                    <ComboBox Name="CmbPalette" SelectedIndex="0" Width="250" Margin="4">
+                        <ComboBoxItem>Klasyczne (zielony)</ComboBoxItem>
+                        <ComboBoxItem>Immigration</ComboBoxItem>
+                        <ComboBoxItem>QuadLife</ComboBoxItem>
+                        <ComboBoxItem>WireWorld</ComboBoxItem>
+                        <ComboBoxItem>Custom</ComboBoxItem>
+                    </ComboBox>
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox Header="Eksport / Import" Margin="4">
+                <StackPanel>
+                    <WrapPanel>
+                        <Button Name="BtnExportImage" Click="BtnExportImage_Click" Margin="4">Eksportuj PNG</Button>
+                        <Button Name="BtnExportSequence" Click="BtnExportMp4_Click" Margin="4">Eksportuj mp4</Button>
+                        <Button Name="BtnExportGif" Click="BtnExportGif_Click" Margin="4">Eksportuj GIF</Button>
+                    </WrapPanel>
+                    <StackPanel Orientation="Horizontal" Margin="4">
+                        <TextBlock Text="Klatki do eksportu:" VerticalAlignment="Center" Margin="4" />
+                        <TextBox Name="TxtExportFrames" Text="30" Width="60" Margin="4" />
+                    </StackPanel>
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox Header="Konfiguracje" Margin="4">
+                <StackPanel>
+                    <ComboBox Name="CmbPatterns" Width="300" Margin="4" SelectionChanged="CmbPatterns_SelectionChanged" />
+                    <Button Name="BtnInsertPattern" Click="BtnInsertPattern_Click" Margin="4">Wstaw wzór</Button>
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox Header="Statystyka" Margin="4">
+                <StackPanel>
+                    <TextBlock Name="TxtGenerations" Text="Pokolenia: 0" Margin="4"
+                               Style="{StaticResource AnimatedText}" />
+                    <TextBlock Name="TxtBorn" Text="Urodziło się: 0" Margin="4" />
+                    <TextBlock Name="TxtDied" Text="Umarło: 0" Margin="4" />
+                    <TextBlock Name="TxtCells" Text="Aktywne komórki: 0" Margin="4" />
+                </StackPanel>
+            </GroupBox>
+
+            <TextBlock Text="Kliknij, aby edytować komórki. Edycja zablokowana podczas animacji."
+                       TextWrapping="Wrap" Margin="4" Style="{StaticResource AnimatedText}" />
+        </StackPanel>
+    </Grid>
+</Window>
