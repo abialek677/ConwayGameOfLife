@@ -31,7 +31,7 @@ public static class FileIoHandlers
             _ => new ClassicColoring()
         };
         
-        var bitmap = mainWindow.Renderer.CreateBitmap(board);
+        var bitmap = mainWindow.Renderer.CreateBitmap(board, mainWindow.ZoomLevel);
         mainWindow.BoardImage.Source = bitmap;
         mainWindow.Bitmap = bitmap;
         mainWindow.UpdateImageSize();
@@ -43,9 +43,14 @@ public static class FileIoHandlers
     {
         var dlg = new SaveFileDialog { Filter = "PNG (*.png)|*.png" };
         if (dlg.ShowDialog() == true)
-            BoardSerializer.ExportImage(mainWindow.BoardManager.Board, mainWindow.Renderer, mainWindow.BoardManager.ColoringStrategy, dlg.FileName);
+            BoardSerializer.ExportImage(mainWindow.BoardManager.Board,
+                mainWindow.Renderer,
+                mainWindow.BoardManager.ColoringStrategy,
+                mainWindow.ZoomLevel,
+                mainWindow.CellShape,
+                dlg.FileName);
     }
-
+    
     public static async void ExportMp4(MainWindow mainWindow, int frameCount, int framerate = 24)
     {
         var dlg = new SaveFileDialog { Filter = "MP4 (*.mp4)|*.mp4" };
@@ -55,10 +60,12 @@ public static class FileIoHandlers
         var renderer = new BoardRenderer();
         var coloring = boardManager.ColoringStrategy;
         var outputPath = dlg.FileName;
-        
+    
         await Task.Run(() =>
         {
-            BoardSerializer.ExportMp4(boardManager, renderer, coloring, outputPath, frameCount, framerate);
+            BoardSerializer.ExportMp4(boardManager, renderer, coloring,
+                mainWindow.ZoomLevel, mainWindow.CellShape,
+                outputPath, frameCount, framerate);
         });
 
         MessageBox.Show("MP4 export finished!", "Export Complete", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -76,7 +83,8 @@ public static class FileIoHandlers
         
         await Task.Run(() =>
         {
-            BoardSerializer.ExportGif(boardManager, renderer, coloring, outputPath, frameCount);
+            BoardSerializer.ExportGif(boardManager, renderer, coloring,
+                mainWindow.ZoomLevel, mainWindow.CellShape, outputPath, frameCount);
         });
 
         MessageBox.Show("GIF export finished!", "Export Complete", MessageBoxButton.OK, MessageBoxImage.Information);

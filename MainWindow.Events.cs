@@ -20,7 +20,7 @@ public partial class MainWindow
         _boardManager.Board.Resize(width, height);
         _boardManager.ResetStats();
         
-        Bitmap = _renderer.CreateBitmap(_boardManager.Board);
+        Bitmap = _renderer.CreateBitmap(_boardManager.Board, _zoomLevel);
         BoardImage.Source = Bitmap;
         UpdateImageSize();
 

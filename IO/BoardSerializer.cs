@@ -51,50 +51,50 @@ namespace GameOfLifeWPF.IO
 
             return (board, rule, model);
         }
-
-
-        public static void ExportImage(Board board, BoardRenderer renderer, IColoringStrategy coloringStrategy, string path)
+        
+        public static void ExportImage(Board board, BoardRenderer renderer, IColoringStrategy coloringStrategy, int zoomLevel, CellShape cellShape, string path)
         {
-            var bitmap = renderer.CreateBitmap(board);
-            renderer.Render(board, bitmap, coloringStrategy);
+            var bitmap = renderer.CreateBitmap(board, zoomLevel);
+            renderer.Render(board, bitmap, coloringStrategy, zoomLevel, cellShape);
             using var stream = new FileStream(path, FileMode.Create);
             var encoder = new PngBitmapEncoder();
             encoder.Frames.Add(BitmapFrame.Create(bitmap));
             encoder.Save(stream);
         }
 
-        public static void ExportMp4(BoardManager boardManager, BoardRenderer renderer, IColoringStrategy coloringStrategy, string outputPath, int frameCount, int framerate = 10)
+        public static void ExportMp4(BoardManager boardManager, BoardRenderer renderer, IColoringStrategy coloringStrategy,
+            int zoomLevel, CellShape cellShape, string outputPath, int frameCount, int framerate = 10)
         {
             var board = boardManager.Board;
-            var videoParams = new VideoEncoderSettings(
-                width: board.Width, height: board.Height, framerate: framerate, codec: VideoCodec.H264);
+            var w = board.Width * zoomLevel;
+            var h = board.Height * zoomLevel;
+            var videoParams = new VideoEncoderSettings(w, h, framerate, VideoCodec.H264);
 
             using var file = MediaBuilder.CreateContainer(outputPath).WithVideo(videoParams).Create();
             for (var i = 0; i < frameCount; i++)
             {
-                var bitmap = renderer.CreateBitmap(board);
-                renderer.Render(board, bitmap, coloringStrategy);
+                var bitmap = renderer.CreateBitmap(board, zoomLevel);
+                renderer.Render(board, bitmap, coloringStrategy, zoomLevel, cellShape);
 
-                var w = bitmap.PixelWidth;
-                var h = bitmap.PixelHeight;
-                var stride = w * 4;
-                var pixelBuffer = new byte[h * stride];
+                var stride = bitmap.PixelWidth * 4;
+                var pixelBuffer = new byte[bitmap.PixelHeight * stride];
                 bitmap.CopyPixels(pixelBuffer, stride, 0);
 
-                var imageData = ImageData.FromArray(pixelBuffer, ImagePixelFormat.Bgra32, w, h);
+                var imageData = ImageData.FromArray(pixelBuffer, ImagePixelFormat.Bgra32, bitmap.PixelWidth, bitmap.PixelHeight);
                 file.Video.AddFrame(imageData);
 
                 boardManager.Step();
             }
         }
-
-        public static void ExportGif(BoardManager boardManager, BoardRenderer renderer, IColoringStrategy coloringStrategy, string path, int frameCount)
+        
+        public static void ExportGif(BoardManager boardManager, BoardRenderer renderer,
+            IColoringStrategy coloringStrategy, int zoomLevel, CellShape cellShape, string path, int frameCount)
         {
             var gifEncoder = new GifBitmapEncoder();
             for (var i = 0; i < frameCount; i++)
             {
-                var bitmap = renderer.CreateBitmap(boardManager.Board);
-                renderer.Render(boardManager.Board, bitmap, coloringStrategy);
+                var bitmap = renderer.CreateBitmap(boardManager.Board, zoomLevel);
+                renderer.Render(boardManager.Board, bitmap, coloringStrategy, zoomLevel, cellShape);
                 gifEncoder.Frames.Add(BitmapFrame.Create(bitmap));
                 boardManager.Step();
             }

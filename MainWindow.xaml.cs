@@ -21,6 +21,9 @@ public partial class MainWindow : Window
     public Pattern? SelectedPattern;
     public bool IsInsertMode;
     public WriteableBitmap Bitmap;
+    private CellShape _cellShape = CellShape.Square;
+    
+    public CellShape CellShape => _cellShape;
     
     public int ZoomLevel => _zoomLevel;
     public BoardManager BoardManager => _boardManager;
@@ -39,14 +42,14 @@ public partial class MainWindow : Window
         FFMediaToolkit.FFmpegLoader.FFmpegPath = ConfigurationManager.AppSettings["ffmpegPath"];
 
         _boardManager = new BoardManager(
-            w: 200,
-            h: 200,
-            rule: new BinaryRule("B3/S23"),
+            GameOfLifeDefaults.DefaultBoardWidth,
+            GameOfLifeDefaults.DefaultBoardHeight,
+            rule: new BinaryRule(GameOfLifeDefaults.DefaultRule),
             coloring: new ClassicColoring(),
             wrap: false
         );
 
-        Bitmap = _renderer.CreateBitmap(_boardManager.Board);
+        Bitmap = _renderer.CreateBitmap(_boardManager.Board, _zoomLevel);
         BoardImage.Source = Bitmap;
 
         _timer = new DispatcherTimer();
@@ -70,16 +73,26 @@ public partial class MainWindow : Window
         BoardImage.MouseMove += UiHandlers.OnBoardMouseMove;
 
         ZoomSlider.ValueChanged += UiHandlers.OnZoomChanged;
+        
+        CmbCellShape.SelectionChanged += (s, e) =>
+        {
+            _cellShape = (CellShape)CmbCellShape.SelectedIndex;
+            Redraw();
+        };
 
         Redraw();
     }
     
     public void Redraw()
     {
-        if (Bitmap.PixelWidth != _boardManager.Board.Width || Bitmap.PixelHeight != _boardManager.Board.Height)
-            Bitmap = _renderer.CreateBitmap(_boardManager.Board);
+        if (Bitmap.PixelWidth != _boardManager.Board.Width * _zoomLevel 
+            || Bitmap.PixelHeight != _boardManager.Board.Height * _zoomLevel)
+        {
+            Bitmap = _renderer.CreateBitmap(_boardManager.Board, _zoomLevel);
+            BoardImage.Source = Bitmap;
+        }
 
-        _renderer.Render(_boardManager.Board, Bitmap, _boardManager.ColoringStrategy);
+        _renderer.Render(_boardManager.Board, Bitmap, _boardManager.ColoringStrategy, _zoomLevel, _cellShape);
         UpdateImageSize();
         UiHandlers.RefreshStatistics(_boardManager, TxtGenerations, TxtBorn, TxtDied, TxtCells);
     }

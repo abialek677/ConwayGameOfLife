@@ -17,29 +17,21 @@
                 </Grid>
             </ScrollViewer>
         </Border>
-
-        <!-- Panel sterowania z gradientem -->
+        
         <StackPanel Grid.Column="1" Margin="8" Orientation="Vertical" VerticalAlignment="Top">
-            <StackPanel.Background>
-                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                    <GradientStop Color="#FAFBFF" Offset="0" />
-                    <GradientStop Color="#DEEFFA" Offset="1" />
-                </LinearGradientBrush>
-            </StackPanel.Background>
 
-            <TextBlock Text="Game of Life" FontSize="18" FontWeight="Bold" Margin="4"
-                       Style="{StaticResource AnimatedText}" />
+            <TextBlock Text="Game of Life" FontSize="18" FontWeight="Bold" Margin="4" Style="{StaticResource AnimationText}"/>
 
-            <WrapPanel Margin="4">
-                <Button Name="BtnNew" Click="BtnNew_Click" Margin="2">Nowa</Button>
-                <Button Name="BtnRandom" Click="BtnRandom_Click" Margin="2">Losuj</Button>
-                <Button Name="BtnClear" Click="BtnClear_Click" Margin="2">Wyczyść</Button>
-                <Button Name="BtnStep" Click="BtnStep_Click" Margin="2">Krok</Button>
-                <ToggleButton Name="BtnPlay" Checked="BtnPlay_Checked" Unchecked="BtnPlay_Unchecked" Margin="2">Start</ToggleButton>
+            <WrapPanel Margin="4" Style="{StaticResource SideFadeIn}">
+                <Button Name="BtnNew" Click="BtnNew_Click" Margin="2" Style="{StaticResource TriggerButton}">New</Button>
+                <Button Name="BtnRandom" Click="BtnRandom_Click" Margin="2" Style="{StaticResource TriggerButton}">Randomize</Button>
+                <Button Name="BtnClear" Click="BtnClear_Click" Margin="2" Style="{StaticResource TriggerButton}">Clear</Button>
+                <Button Name="BtnStep" Click="BtnStep_Click" Margin="2" Style="{StaticResource TriggerButton}">Step</Button>
+                <ToggleButton Name="BtnPlay" Checked="BtnPlay_Checked" Unchecked="BtnPlay_Unchecked" Margin="2" Style="{StaticResource EmphasizedToggleButton}">Start</ToggleButton>
             </WrapPanel>
 
-            <StackPanel Orientation="Horizontal" Margin="4" VerticalAlignment="Center">
-                <TextBlock Text="Szybkość (ms):" VerticalAlignment="Center" Margin="4" />
+            <StackPanel Orientation="Horizontal" Margin="4" VerticalAlignment="Center" Style="{StaticResource SideFadeIn}">
+                <TextBlock Text="Speed:" VerticalAlignment="Center" Margin="4" />
                 <Slider Name="SpeedSlider" Minimum="1" Maximum="150" Value="75" Width="180" IsMoveToPointEnabled="True">
                     <Slider.LayoutTransform>
                         <ScaleTransform ScaleX="-1" />
@@ -47,81 +39,86 @@
                 </Slider>
             </StackPanel>
 
-            <GroupBox Header="Plansza" Margin="4">
+            <GroupBox Header="Board" Margin="4" Style="{StaticResource SideFadeIn}">
                 <StackPanel>
                     <StackPanel Orientation="Horizontal" Margin="2">
-                        <TextBlock Text="Szerokość:" VerticalAlignment="Center" Margin="4" />
+                        <TextBlock Text="Width:" VerticalAlignment="Center" Margin="4" />
                         <TextBox Name="TxtWidth" Text="200" Width="80" Margin="4" />
-                        <TextBlock Text="Wysokość:" VerticalAlignment="Center" Margin="4" />
+                        <TextBlock Text="Height:" VerticalAlignment="Center" Margin="4" />
                         <TextBox Name="TxtHeight" Text="200" Width="80" Margin="4" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Margin="2">
-                        <TextBlock Text="Wrap (cykliczne granice):" VerticalAlignment="Center" Margin="4" />
+                        <TextBlock Text="Wrap (cyclic borders):" VerticalAlignment="Center" Margin="4" />
                         <ToggleButton Name="ToggleWrap" IsChecked="False" Content="Wrap ON/OFF"
-                                      Checked="ToggleWrap_Checked" Unchecked="ToggleWrap_Unchecked" Margin="4" />
+                                      Checked="ToggleWrap_Checked" Unchecked="ToggleWrap_Unchecked" Margin="4" Style="{StaticResource EmphasizedToggleButton}"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Margin="2">
-                        <Button Name="BtnSave" Click="BtnSave_Click" Margin="4">Zapisz...</Button>
-                        <Button Name="BtnLoad" Click="BtnLoad_Click" Margin="4">Wczytaj...</Button>
+                        <Button Name="BtnSave" Click="BtnSave_Click" Margin="4" Style="{StaticResource TriggerButton}">Save</Button>
+                        <Button Name="BtnLoad" Click="BtnLoad_Click" Margin="4" Style="{StaticResource TriggerButton}">Load</Button>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Margin="2">
                     </StackPanel>
                 </StackPanel>
             </GroupBox>
 
-            <GroupBox Header="Wygląd" Margin="4">
+            <GroupBox Header="Display" Margin="4" Style="{StaticResource SideFadeIn}">
                 <StackPanel>
                     <TextBlock Text="Zoom:" Margin="4" />
                     <Slider Name="ZoomSlider" Minimum="1" Maximum="16" Value="4" Width="300" Margin="4"
                             ValueChanged="ZoomSlider_ValueChanged"/>
                         
                     <StackPanel Orientation="Horizontal" Margin="2">
-                        <TextBlock Text="Reguła (B/S):" VerticalAlignment="Center" Margin="4" />
+                        <TextBlock Text="Rule (B/S):" VerticalAlignment="Center" Margin="4" />
                         <TextBox Name="TxtRule" Text="B3/S23" Width="140" Margin="4" />
-                        <Button Name="BtnApplyRule" Click="BtnApplyRule_Click" Margin="4">Zastosuj</Button>
+                        <Button Name="BtnApplyRule" Click="BtnApplyRule_Click" Margin="4" Style="{StaticResource TriggerButton}">Apply</Button>
                     </StackPanel>
-                    <TextBlock Text="Paleta kolorów:" Margin="4" />
+                    <TextBlock Text="Color palette:" Margin="4" />
                     <ComboBox Name="CmbPalette" SelectedIndex="0" Width="250" Margin="4">
-                        <ComboBoxItem>Klasyczne (zielony)</ComboBoxItem>
+                        <ComboBoxItem>Classic</ComboBoxItem>
                         <ComboBoxItem>Immigration</ComboBoxItem>
                         <ComboBoxItem>QuadLife</ComboBoxItem>
+                    </ComboBox>
+                    <TextBlock Text="Cell Shape:" Margin="4"/>
+                    <ComboBox Name="CmbCellShape" Width="250" Margin="4" SelectedIndex="0">
+                        <ComboBoxItem>Square</ComboBoxItem>
+                        <ComboBoxItem>Circle</ComboBoxItem>
+                        <ComboBoxItem>Triangle</ComboBoxItem>
                     </ComboBox>
                 </StackPanel>
             </GroupBox>
 
-            <GroupBox Header="Eksport / Import" Margin="4">
+            <GroupBox Header="Export" Margin="4" Style="{StaticResource SideFadeIn}">
                 <StackPanel>
                     <WrapPanel>
-                        <Button Name="BtnExportImage" Click="BtnExportImage_Click" Margin="4">Eksportuj PNG</Button>
-                        <Button Name="BtnExportSequence" Click="BtnExportMp4_Click" Margin="4">Eksportuj mp4</Button>
-                        <Button Name="BtnExportGif" Click="BtnExportGif_Click" Margin="4">Eksportuj GIF</Button>
+                        <Button Name="BtnExportImage" Click="BtnExportImage_Click" Margin="4" Style="{StaticResource TemplateButton}">Export PNG</Button>
+                        <Button Name="BtnExportSequence" Click="BtnExportMp4_Click" Margin="4" Style="{StaticResource TemplateButton}">Export mp4</Button>
+                        <Button Name="BtnExportGif" Click="BtnExportGif_Click" Margin="4" Style="{StaticResource TemplateButton}">Export GIF</Button>
                     </WrapPanel>
                     <StackPanel Orientation="Horizontal" Margin="4">
-                        <TextBlock Text="Klatki do eksportu:" VerticalAlignment="Center" Margin="4" />
+                        <TextBlock Text="Frames to export:" VerticalAlignment="Center" Margin="4" />
                         <TextBox Name="TxtExportFrames" Text="30" Width="60" Margin="4" />
                     </StackPanel>
                 </StackPanel>
             </GroupBox>
 
-            <GroupBox Header="Konfiguracje" Margin="4">
+            <GroupBox Header="Input patterns" Margin="4" Style="{StaticResource SideFadeIn}">
                 <StackPanel>
                     <ComboBox Name="CmbPatterns" Width="300" Margin="4" SelectionChanged="CmbPatterns_SelectionChanged" />
-                    <Button Name="BtnInsertPattern" Click="BtnInsertPattern_Click" Margin="4">Wstaw wzór</Button>
+                    <Button Name="BtnInsertPattern" Click="BtnInsertPattern_Click" Margin="4" Style="{StaticResource TriggerButton}">Insert patterns</Button>
                 </StackPanel>
             </GroupBox>
 
-            <GroupBox Header="Statystyka" Margin="4">
+            <GroupBox Header="Statistics" Margin="4" Style="{StaticResource SideFadeIn}">
                 <StackPanel>
-                    <TextBlock Name="TxtGenerations" Text="Pokolenia: 0" Margin="4"
-                               Style="{StaticResource AnimatedText}" />
-                    <TextBlock Name="TxtBorn" Text="Urodziło się: 0" Margin="4" />
-                    <TextBlock Name="TxtDied" Text="Umarło: 0" Margin="4" />
-                    <TextBlock Name="TxtCells" Text="Aktywne komórki: 0" Margin="4" />
+                    <TextBlock Name="TxtGenerations" Text="" Margin="4" />
+                    <TextBlock Name="TxtBorn" Text="" Margin="4" />
+                    <TextBlock Name="TxtDied" Text="" Margin="4" />
+                    <TextBlock Name="TxtCells" Text="" Margin="4" />
                 </StackPanel>
             </GroupBox>
 
-            <TextBlock Text="Kliknij, aby edytować komórki. Edycja zablokowana podczas animacji."
-                       TextWrapping="Wrap" Margin="4" Style="{StaticResource AnimatedText}" />
+            <TextBlock Text="Click on the board to add/remove cells. Not permitted during simulation."
+                       TextWrapping="Wrap" Margin="4"  Style="{StaticResource SideFadeIn}"/>
         </StackPanel>
     </Grid>
 </Window>
