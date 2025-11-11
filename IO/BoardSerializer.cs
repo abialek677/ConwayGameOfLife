@@ -52,10 +52,10 @@ namespace GameOfLifeWPF.IO
             return (board, rule, model);
         }
         
-        public static void ExportImage(Board board, BoardRenderer renderer, IColoringStrategy coloringStrategy, int zoomLevel, CellShape cellShape, string path)
+        public static void ExportImage(Board board, BoardRenderer renderer, IColoringStrategy coloringStrategy, int zoomLevel, CellShape cellShape, string path, ColorPalette palette)
         {
             var bitmap = renderer.CreateBitmap(board, zoomLevel);
-            renderer.Render(board, bitmap, coloringStrategy, zoomLevel, cellShape);
+            renderer.Render(board, bitmap, coloringStrategy, zoomLevel, cellShape, palette);
             using var stream = new FileStream(path, FileMode.Create);
             var encoder = new PngBitmapEncoder();
             encoder.Frames.Add(BitmapFrame.Create(bitmap));
@@ -63,7 +63,7 @@ namespace GameOfLifeWPF.IO
         }
 
         public static void ExportMp4(BoardManager boardManager, BoardRenderer renderer, IColoringStrategy coloringStrategy,
-            int zoomLevel, CellShape cellShape, string outputPath, int frameCount, int framerate = 10)
+            int zoomLevel, CellShape cellShape, string outputPath, int frameCount,  ColorPalette palette, int framerate = 10)
         {
             var board = boardManager.Board;
             var w = board.Width * zoomLevel;
@@ -74,7 +74,7 @@ namespace GameOfLifeWPF.IO
             for (var i = 0; i < frameCount; i++)
             {
                 var bitmap = renderer.CreateBitmap(board, zoomLevel);
-                renderer.Render(board, bitmap, coloringStrategy, zoomLevel, cellShape);
+                renderer.Render(board, bitmap, coloringStrategy, zoomLevel, cellShape, palette);
 
                 var stride = bitmap.PixelWidth * 4;
                 var pixelBuffer = new byte[bitmap.PixelHeight * stride];
@@ -88,13 +88,13 @@ namespace GameOfLifeWPF.IO
         }
         
         public static void ExportGif(BoardManager boardManager, BoardRenderer renderer,
-            IColoringStrategy coloringStrategy, int zoomLevel, CellShape cellShape, string path, int frameCount)
+            IColoringStrategy coloringStrategy, int zoomLevel, CellShape cellShape, string path, int frameCount, ColorPalette palette)
         {
             var gifEncoder = new GifBitmapEncoder();
             for (var i = 0; i < frameCount; i++)
             {
                 var bitmap = renderer.CreateBitmap(boardManager.Board, zoomLevel);
-                renderer.Render(boardManager.Board, bitmap, coloringStrategy, zoomLevel, cellShape);
+                renderer.Render(boardManager.Board, bitmap, coloringStrategy, zoomLevel, cellShape, palette);
                 gifEncoder.Frames.Add(BitmapFrame.Create(bitmap));
                 boardManager.Step();
             }

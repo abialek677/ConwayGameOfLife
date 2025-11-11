@@ -72,12 +72,14 @@
                         <TextBox Name="TxtRule" Text="B3/S23" Width="140" Margin="4" />
                         <Button Name="BtnApplyRule" Click="BtnApplyRule_Click" Margin="4" Style="{StaticResource TriggerButton}">Apply</Button>
                     </StackPanel>
-                    <TextBlock Text="Color palette:" Margin="4" />
+                    <TextBlock Text="Coloring strategy:" Margin="4" />
                     <ComboBox Name="CmbPalette" SelectedIndex="0" Width="250" Margin="4">
                         <ComboBoxItem>Classic</ComboBoxItem>
                         <ComboBoxItem>Immigration</ComboBoxItem>
                         <ComboBoxItem>QuadLife</ComboBoxItem>
                     </ComboBox>
+                    <TextBlock Text="Color palette:" Margin="4" />
+                    <ComboBox Name="CmbColorPalette" SelectedIndex="0" Width="250" Margin="4" />
                     <TextBlock Text="Cell Shape:" Margin="4"/>
                     <ComboBox Name="CmbCellShape" Width="250" Margin="4" SelectedIndex="0">
                         <ComboBoxItem>Square</ComboBoxItem>

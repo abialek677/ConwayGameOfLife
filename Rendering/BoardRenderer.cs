@@ -27,7 +27,7 @@ public class BoardRenderer
     }
 
     public void Render(Board board, WriteableBitmap bitmap, IColoringStrategy coloringStrategy, int zoomLevel,
-        CellShape cellShape)
+        CellShape cellShape, ColorPalette palette)
     {
         var w = board.Width;
         var h = board.Height;
@@ -63,7 +63,8 @@ public class BoardRenderer
                     {
                         var state = board.Cells[y, x];
                         if (state == 0) continue;
-                        var color = coloringStrategy.GetColor(state);
+                        var coloringStrat = coloringStrategy.GetColor(state);
+                        var color = palette.GetDisplayColor(coloringStrat);
 
                         var center = zoomLevel / 2.0;
                         var radius = zoomLevel * 0.45;

@@ -28,7 +28,8 @@ public partial class MainWindow : Window
     public int ZoomLevel => _zoomLevel;
     public BoardManager BoardManager => _boardManager;
     public BoardRenderer Renderer => _renderer;
-
+    public ColorPalette SelectedColorPalette => Palettes.All[CmbColorPalette.SelectedIndex];
+    
     public MainWindow()
     {
         InitializeComponent();
@@ -79,6 +80,10 @@ public partial class MainWindow : Window
             _cellShape = (CellShape)CmbCellShape.SelectedIndex;
             Redraw();
         };
+        
+        CmbColorPalette.ItemsSource = Palettes.All.Select(p => p.Name).ToList();
+        CmbColorPalette.SelectedIndex = 0;
+        CmbColorPalette.SelectionChanged += (s, e) => Redraw();
 
         Redraw();
     }
@@ -92,7 +97,7 @@ public partial class MainWindow : Window
             BoardImage.Source = Bitmap;
         }
 
-        _renderer.Render(_boardManager.Board, Bitmap, _boardManager.ColoringStrategy, _zoomLevel, _cellShape);
+        _renderer.Render(_boardManager.Board, Bitmap, _boardManager.ColoringStrategy, _zoomLevel, _cellShape, SelectedColorPalette);
         UpdateImageSize();
         UiHandlers.RefreshStatistics(_boardManager, TxtGenerations, TxtBorn, TxtDied, TxtCells);
     }

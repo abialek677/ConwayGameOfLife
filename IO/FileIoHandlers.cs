@@ -48,7 +48,8 @@ public static class FileIoHandlers
                 mainWindow.BoardManager.ColoringStrategy,
                 mainWindow.ZoomLevel,
                 mainWindow.CellShape,
-                dlg.FileName);
+                dlg.FileName,
+                mainWindow.SelectedColorPalette);
     }
     
     public static async void ExportMp4(MainWindow mainWindow, int frameCount, int framerate = 24)
@@ -65,7 +66,7 @@ public static class FileIoHandlers
         {
             BoardSerializer.ExportMp4(boardManager, renderer, coloring,
                 mainWindow.ZoomLevel, mainWindow.CellShape,
-                outputPath, frameCount, framerate);
+                outputPath, frameCount, mainWindow.SelectedColorPalette, framerate);
         });
 
         MessageBox.Show("MP4 export finished!", "Export Complete", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -84,7 +85,7 @@ public static class FileIoHandlers
         await Task.Run(() =>
         {
             BoardSerializer.ExportGif(boardManager, renderer, coloring,
-                mainWindow.ZoomLevel, mainWindow.CellShape, outputPath, frameCount);
+                mainWindow.ZoomLevel, mainWindow.CellShape, outputPath, frameCount, mainWindow.SelectedColorPalette);
         });
 
         MessageBox.Show("GIF export finished!", "Export Complete", MessageBoxButton.OK, MessageBoxImage.Information);
