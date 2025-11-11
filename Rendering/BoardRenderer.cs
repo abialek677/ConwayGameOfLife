@@ -21,6 +21,7 @@ public class BoardRenderer
             bufferWidthPx = widthPx;
             bufferHeightPx = heightPx;
         }
+        Array.Clear(pixelBuffer, 0, pixelBuffer.Length);
 
         return new WriteableBitmap(widthPx, heightPx, GameOfLifeDefaults.DefaultDpiX, GameOfLifeDefaults.DefaultDpiY,
             PixelFormats.Bgra32, null);
@@ -44,7 +45,6 @@ public class BoardRenderer
             bufferWidthPx = widthPx;
             bufferHeightPx = heightPx;
         }
-
         Array.Clear(pixelBuffer, 0, pixelBuffer.Length);
 
         Parallel.For(0, tileCountY, ty =>

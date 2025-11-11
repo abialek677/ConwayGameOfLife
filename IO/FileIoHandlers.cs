@@ -56,20 +56,29 @@ public static class FileIoHandlers
     {
         var dlg = new SaveFileDialog { Filter = "MP4 (*.mp4)|*.mp4" };
         if (dlg.ShowDialog() != true) return;
-
+        
         var boardManager = mainWindow.BoardManager;
         var renderer = new BoardRenderer();
         var coloring = boardManager.ColoringStrategy;
         var outputPath = dlg.FileName;
-    
+        var zoomLevel = mainWindow.ZoomLevel;
+        var cellShape = mainWindow.CellShape;
+        
+        ColorPalette palette = null;
+        mainWindow.Dispatcher.Invoke(() => {
+            palette = mainWindow.SelectedColorPalette;
+        });
+
         await Task.Run(() =>
         {
             BoardSerializer.ExportMp4(boardManager, renderer, coloring,
-                mainWindow.ZoomLevel, mainWindow.CellShape,
-                outputPath, frameCount, mainWindow.SelectedColorPalette, framerate);
+                zoomLevel, cellShape,
+                outputPath, frameCount, palette, framerate);
         });
-
-        MessageBox.Show("MP4 export finished!", "Export Complete", MessageBoxButton.OK, MessageBoxImage.Information);
+        
+        mainWindow.Dispatcher.Invoke(() => {
+            MessageBox.Show("MP4 export finished!", "Export Complete", MessageBoxButton.OK, MessageBoxImage.Information);
+        });
     }
 
     public static async void ExportGif(MainWindow mainWindow, int frameCount)
@@ -81,13 +90,23 @@ public static class FileIoHandlers
         var renderer = new BoardRenderer();
         var coloring = boardManager.ColoringStrategy;
         var outputPath = dlg.FileName;
+        var zoomLevel = mainWindow.ZoomLevel;
+        var cellShape = mainWindow.CellShape;
         
+        ColorPalette selectedPalette = null;
+        mainWindow.Dispatcher.Invoke(() => {
+            selectedPalette = mainWindow.SelectedColorPalette;
+        });
+
         await Task.Run(() =>
         {
             BoardSerializer.ExportGif(boardManager, renderer, coloring,
-                mainWindow.ZoomLevel, mainWindow.CellShape, outputPath, frameCount, mainWindow.SelectedColorPalette);
+                zoomLevel, cellShape, outputPath, frameCount, selectedPalette);
         });
-
-        MessageBox.Show("GIF export finished!", "Export Complete", MessageBoxButton.OK, MessageBoxImage.Information);
+        
+        mainWindow.Dispatcher.Invoke(() => {
+            MessageBox.Show("GIF export finished!", "Export Complete", MessageBoxButton.OK, MessageBoxImage.Information);
+        });
     }
+
 }
